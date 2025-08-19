@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Professionals Vocabulary Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .activity-container {
+            padding: 40px;
+        }
+
+        .activity-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .activity-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .activity-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .activity-btn.active {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .activity-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .activity-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #4facfe;
+        }
+
+        .question {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option:hover {
+            background: #e3f2fd;
+            border-color: #4facfe;
+        }
+
+        .option.selected {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .option.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .option.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .check-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .matching-column {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .matching-column h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .match-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .match-item:hover {
+            background: #e3f2fd;
+            border-color: #4facfe;
+        }
+
+        .match-item.selected {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .match-item.matched {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+            cursor: default;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .scenario-text {
+            background: #f0f8ff;
+            border-left: 4px solid #4facfe;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .activity-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .matching-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦷 Dental Professionals Vocabulary Challenge</h1>
+            <p>Master the terminology you'll use in your dental hygiene career!</p>
+        </div>
+
+        <div class="activity-container">
+            <div class="activity-selector">
+                <button class="activity-btn active" onclick="showActivity('quiz')">Multiple Choice Quiz</button>
+                <button class="activity-btn" onclick="showActivity('matching')">Matching Game</button>
+                <button class="activity-btn" onclick="showActivity('scenarios')">Real-World Scenarios</button>
+            </div>
+
+            <!-- Multiple Choice Quiz -->
+            <div id="quiz" class="activity-section active">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Multiple Choice Quiz</h2>
+                <div class="score-display">Score: <span id="quiz-score">0</span>/10</div>
+                
+                <div class="card">
+                    <div class="question">1. What does a Certified Dental Technician (CDT) do?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">Provides preventive and therapeutic services</div>
+                        <div class="option" onclick="selectOption(this, true)">Fabricates crowns, bridges, and dentures per dentist's prescription</div>
+                        <div class="option" onclick="selectOption(this, false)">Installs and maintains dental equipment</div>
+                        <div class="option" onclick="selectOption(this, false)">Diagnoses and treats oral diseases</div>
+                    </div>
+                    <button class="check-btn" onclick="checkAnswer(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="question">2. Which specialty focuses on preventing, intercepting, and correcting skeletal and dental problems?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">Periodontics</div>
+                        <div class="option" onclick="selectOption(this, true)">Orthodontics</div>
+                        <div class="option" onclick="selectOption(this, false)">Endodontics</div>
+                        <div class="option" onclick="selectOption(this, false)">Prosthodontics</div>
+                    </div>
+                    <button class="check-btn" onclick="checkAnswer(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="question">3. What does HIPAA stand for and regulate?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">Healthcare Information Protection and Access Act - dental procedures</div>
+                        <div class="option" onclick="selectOption(this, true)">Health Insurance Portability and Accountability Act - patient healthcare information privacy</div>
+                        <div class="option" onclick="selectOption(this, false)">Hospital Information Processing and Administration Act - medical records</div>
+                        <div class="option" onclick="selectOption(this, false)">Health Industry Professional Advancement Act - career development</div>
+                    </div>
+                    <button class="check-btn" onclick="checkAnswer(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="question">4. Which dental specialty deals with neonatal through adolescent patients?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">Oral and Maxillofacial Surgery</div>
+                        <div class="option" onclick="selectOption(this, true)">Pediatric Dentistry</div>
+                        <div class="option" onclick="selectOption(this, false)">Dental Public Health</div>
+                        <div class="option" onclick="selectOption(this, false)">Oral Pathology</div>
+                    </div>
+                    <button class="check-btn" onclick="checkAnswer(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="question">5. What is the main difference between a dental laboratory technician and a CDT?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">CDTs work directly with patients</div>
+                        <div class="option" onclick="selectOption(this, true)">CDTs have passed a national examination</div>
+                        <div class="option" onclick="selectOption(this, false)">CDTs can prescribe treatments</div>
+                        <div class="option" onclick="selectOption(this, false)">CDTs work in dental offices only</div>
+                    </div>
+                    <button class="check-btn" onclick="checkAnswer(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <button class="reset-btn" onclick="resetQuiz()">Reset Quiz</button>
+            </div>
+
+            <!-- Matching Game -->
+            <div id="matching" class="activity-section">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Match the Professional to Their Role</h2>
+                <div class="score-display">Matches: <span id="matching-score">0</span>/8</div>
+                
+                <div class="matching-container">
+                    <div class="matching-column">
+                        <h3>Dental Professionals</h3>
+                        <div class="match-item" data-match="1">Dental Hygienist</div>
+                        <div class="match-item" data-match="2">Endodontist</div>
+                        <div class="match-item" data-match="3">Periodontist</div>
+                        <div class="match-item" data-match="4">Prosthodontist</div>
+                        <div class="match-item" data-match="5">Oral Pathologist</div>
+                        <div class="match-item" data-match="6">Orthodontist</div>
+                        <div class="match-item" data-match="7">Dental Equipment Technician</div>
+                        <div class="match-item" data-match="8">Certified Dental Assistant</div>
+                    </div>
+                    
+                    <div class="matching-column">
+                        <h3>Primary Responsibilities</h3>
+                        <div class="match-item" data-match="1">Provides preventive, therapeutic, and educational services</div>
+                        <div class="match-item" data-match="2">Diagnoses and treats diseases of the pulp</div>
+                        <div class="match-item" data-match="3">Treats diseases of supporting tissues</div>
+                        <div class="match-item" data-match="4">Provides restoration and replacement of natural teeth</div>
+                        <div class="match-item" data-match="5">Diagnoses and treats diseases of oral structures</div>
+                        <div class="match-item" data-match="6">Corrects skeletal and dental problems</div>
+                        <div class="match-item" data-match="7">Installs and maintains dental equipment</div>
+                        <div class="match-item" data-match="8">Nationally certified professional providing patient support</div>
+                    </div>
+                </div>
+                
+                <button class="reset-btn" onclick="resetMatching()">Reset Matching</button>
+            </div>
+
+            <!-- Real-World Scenarios -->
+            <div id="scenarios" class="activity-section">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Real-World Scenarios</h2>
+                <div class="score-display">Scenario Score: <span id="scenario-score">0</span>/5</div>
+                
+                <div class="card">
+                    <div class="scenario-text">
+                        Sarah, a 16-year-old patient, comes to the dental office complaining of crooked teeth that make her self-conscious about smiling. She wants to know what type of treatment might help her.
+                    </div>
+                    <div class="question">Which dental specialist would be most appropriate for Sarah's concern?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">Periodontist</div>
+                        <div class="option" onclick="selectOption(this, true)">Orthodontist</div>
+                        <div class="option" onclick="selectOption(this, false)">Endodontist</div>
+                        <div class="option" onclick="selectOption(this, false)">Prosthodontist</div>
+                    </div>
+                    <button class="check-btn" onclick="checkScenario(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="scenario-text">
+                        Mr. Johnson needs a crown fabricated for his molar. The dentist has taken impressions and needs someone to create the crown according to specific specifications.
+                    </div>
+                    <div class="question">Who would be responsible for creating Mr. Johnson's crown?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">Dental Hygienist</div>
+                        <div class="option" onclick="selectOption(this, true)">Dental Laboratory Technician</div>
+                        <div class="option" onclick="selectOption(this, false)">Dental Assistant</div>
+                        <div class="option" onclick="selectOption(this, false)">Dental Supply Person</div>
+                    </div>
+                    <button class="check-btn" onclick="checkScenario(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="scenario-text">
+                        The dental office's digital X-ray machine has stopped working properly. The images are coming out blurry and the software keeps crashing.
+                    </div>
+                    <div class="question">Who should be called to address this problem?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, true)">Dental Equipment Technician</div>
+                        <div class="option" onclick="selectOption(this, false)">Dental Supply Person</div>
+                        <div class="option" onclick="selectOption(this, false)">Detail Person</div>
+                        <div class="option" onclick="selectOption(this, false)">Oral and Maxillofacial Radiologist</div>
+                    </div>
+                    <button class="check-btn" onclick="checkScenario(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="scenario-text">
+                        A patient needs to have their medical history reviewed, blood pressure checked, and teeth cleaned. They also need education about proper brushing and flossing techniques.
+                    </div>
+                    <div class="question">Which professional would typically handle these preventive care tasks?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">Dentist</div>
+                        <div class="option" onclick="selectOption(this, true)">Dental Hygienist</div>
+                        <div class="option" onclick="selectOption(this, false)">Dental Assistant</div>
+                        <div class="option" onclick="selectOption(this, false)">Certified Dental Technician</div>
+                    </div>
+                    <button class="check-btn" onclick="checkScenario(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="scenario-text">
+                        A dental office needs to ensure they are following proper protocols for protecting patient information when sharing records with insurance companies and other healthcare providers.
+                    </div>
+                    <div class="question">Which regulation governs these privacy requirements?</div>
+                    <div class="options">
+                        <div class="option" onclick="selectOption(this, false)">ADAA Guidelines</div>
+                        <div class="option" onclick="selectOption(this, true)">HIPAA</div>
+                        <div class="option" onclick="selectOption(this, false)">DANB Standards</div>
+                        <div class="option" onclick="selectOption(this, false)">CDA Requirements</div>
+                    </div>
+                    <button class="check-btn" onclick="checkScenario(this)">Check Answer</button>
+                    <div class="feedback" style="display: none;"></div>
+                </div>
+
+                <button class="reset-btn" onclick="resetScenarios()">Reset Scenarios</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let quizScore = 0;
+        let matchingScore = 0;
+        let scenarioScore = 0;
+        let selectedMatches = [];
+
+        function showActivity(activity) {
+            // Remove active class from all buttons and sections
+            document.querySelectorAll('.activity-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.activity-section').forEach(section => section.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding section
+            event.target.classList.add('active');
+            document.getElementById(activity).classList.add('active');
+        }
+
+        function selectOption(option, isCorrect) {
+            // Remove selection from siblings
+            option.parentElement.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Select this option
+            option.classList.add('selected');
+            option.dataset.correct = isCorrect;
+        }
+
+        function checkAnswer(button) {
+            const card = button.closest('.card');
+            const selectedOption = card.querySelector('.option.selected');
+            const feedback = card.querySelector('.feedback');
+            
+            if (!selectedOption) {
+                feedback.textContent = 'Please select an answer first!';
+                feedback.className = 'feedback incorrect';
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            const isCorrect = selectedOption.dataset.correct === 'true';
+            
+            // Show correct/incorrect styling
+            card.querySelectorAll('.option').forEach(opt => {
+                if (opt.dataset.correct === 'true') {
+                    opt.classList.add('correct');
+                } else if (opt.classList.contains('selected') && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // Update score
+            if (isCorrect && !button.dataset.answered) {
+                quizScore++;
+                document.getElementById('quiz-score').textContent = quizScore;
+            }
+            
+            // Show feedback
+            feedback.textContent = isCorrect ? 'Correct! Great job!' : 'Incorrect. Check the correct answer highlighted in green.';
+            feedback.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            feedback.style.display = 'block';
+            
+            button.dataset.answered = 'true';
+            button.disabled = true;
+        }
+
+        function checkScenario(button) {
+            const card = button.closest('.card');
+            const selectedOption = card.querySelector('.option.selected');
+            const feedback = card.querySelector('.feedback');
+            
+            if (!selectedOption) {
+                feedback.textContent = 'Please select an answer first!';
+                feedback.className = 'feedback incorrect';
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            const isCorrect = selectedOption.dataset.correct === 'true';
+            
+            // Show correct/incorrect styling
+            card.querySelectorAll('.option').forEach(opt => {
+                if (opt.dataset.correct === 'true') {
+                    opt.classList.add('correct');
+                } else if (opt.classList.contains('selected') && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // Update score
+            if (isCorrect && !button.dataset.answered) {
+                scenarioScore++;
+                document.getElementById('scenario-score').textContent = scenarioScore;
+            }
+            
+            // Show feedback
+            feedback.textContent = isCorrect ? 'Excellent! You chose the right professional for this scenario.' : 'Not quite right. The correct answer is highlighted in green.';
+            feedback.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            feedback.style.display = 'block';
+            
+            button.dataset.answered = 'true';
+            button.disabled = true;
+        }
+
+        function resetQuiz() {
+            quizScore = 0;
+            document.getElementById('quiz-score').textContent = quizScore;
+            
+            document.querySelectorAll('#quiz .card').forEach(card => {
+                card.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+                card.querySelector('.feedback').style.display = 'none';
+                const button = card.querySelector('.check-btn');
+                button.disabled = false;
+                button.dataset.answered = 'false';
+            });
+        }
+
+        function resetScenarios() {
+            scenarioScore = 0;
+            document.getElementById('scenario-score').textContent = scenarioScore;
+            
+            document.querySelectorAll('#scenarios .card').forEach(card => {
+                card.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+                card.querySelector('.feedback').style.display = 'none';
+                const button = card.querySelector('.check-btn');
+                button.disabled = false;
+                button.dataset.answered = 'false';
+            });
+        }
+
+        // Matching game functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const matchItems = document.querySelectorAll('#matching .match-item');
+            
+            matchItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (this.classList.contains('matched')) return;
+                    
+                    if (selectedMatches.length < 2) {
+                        this.classList.add('selected');
+                        selectedMatches.push(this);
+                        
+                        if (selectedMatches.length === 2) {
+                            setTimeout(checkMatch, 500);
+                        }
+                    }
+                });
+            });
+        });
+
+        function checkMatch() {
+            const [first, second] = selectedMatches;
+            
+            if (first.dataset.match === second.dataset.match) {
+                // Correct match
+                first.classList.remove('selected');
+                second.classList.remove('selected');
+                first.classList.add('matched');
+                second.classList.add('matched');
+                
+                matchingScore++;
+                document.getElementById('matching-score').textContent = matchingScore;
+                
+                if (matchingScore === 8) {
+                    setTimeout(() => {
+                        alert('Congratulations! You matched all the dental professionals correctly!');
+                    }, 500);
+                }
+            } else {
+                // Incorrect match
+                first.classList.remove('selected');
+                second.classList.remove('selected');
+            }
+            
+            selectedMatches = [];
+        }
+
+        function resetMatching() {
+            matchingScore = 0;
+            selectedMatches = [];
+            document.getElementById('matching-score').textContent = matchingScore;
+            
+            document.querySelectorAll('#matching .match-item').forEach(item => {
+                item.classList.remove('selected', 'matched');
+            });
+        }
+    </script>
+</body>
+</html>
